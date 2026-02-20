@@ -1,0 +1,399 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-deep: #040818;
+    --accent: #4f9cff;
+    --accent2: #a855f7;
+    --glow: rgba(79, 156, 255, 0.4);
+    --danger: #ff4f6b;
+    --success: #34d399;
+    --warn: #fbbf24;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --border: rgba(79, 156, 255, 0.2);
+}
+
+html,
+body {
+    height: 100%;
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* ===== GAME LAYOUT ===== */
+#game-root {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== TOP HUD ===== */
+#hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(4, 8, 24, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.hud-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hud-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.hud-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--glow);
+    min-width: 60px;
+    text-align: center;
+}
+
+.hud-value.lives {
+    color: var(--danger);
+    text-shadow: 0 0 10px rgba(255, 79, 107, 0.5);
+}
+
+.hud-value.level {
+    color: var(--accent2);
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+.hud-value.best {
+    color: var(--warn);
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.hud-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 900;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#btn-pause {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#btn-pause:hover {
+    background: rgba(79, 156, 255, 0.15);
+    border-color: var(--accent);
+}
+
+/* ===== CANVAS WRAPPER ===== */
+#canvas-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#gameCanvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    image-rendering: pixelated;
+}
+
+/* ===== OVERLAYS ===== */
+.overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(4, 8, 24, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 10;
+    animation: fadeIn 0.3s ease;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.overlay-card {
+    text-align: center;
+    padding: 40px 48px;
+    background: rgba(10, 20, 50, 0.8);
+    border: 1px solid rgba(79, 156, 255, 0.3);
+    border-radius: 20px;
+    box-shadow: 0 0 60px rgba(79, 156, 255, 0.2);
+    max-width: 420px;
+    width: 90%;
+    animation: card-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes card-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.overlay-card .emoji {
+    font-size: 3.5rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.overlay-card h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.overlay-card p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.overlay-card .stat {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin: 12px 0;
+}
+
+.overlay-card .stat span {
+    color: var(--warn);
+}
+
+.btn-game {
+    display: inline-block;
+    padding: 12px 28px;
+    margin: 8px 6px 0;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-game:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px var(--glow);
+}
+
+.btn-game:active {
+    transform: translateY(0);
+}
+
+.btn-game.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+}
+
+.btn-game.secondary:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    box-shadow: none;
+}
+
+/* ===== CONTROLS HINT ===== */
+.controls-hint {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: rgba(148, 163, 184, 0.4);
+    letter-spacing: 1px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* ===== LEADERBOARD PANEL ===== */
+#leaderboard-panel {
+    max-height: 240px;
+    overflow-y: auto;
+    margin-top: 16px;
+    text-align: left;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+}
+
+.lb-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    transition: 0.15s;
+    gap: 8px;
+}
+
+.lb-row:hover {
+    background: rgba(79, 156, 255, 0.08);
+}
+
+.lb-row.me {
+    background: rgba(79, 156, 255, 0.15);
+}
+
+.lb-rank {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    color: var(--muted);
+    min-width: 24px;
+}
+
+.lb-name {
+    flex: 1;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lb-score {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--warn);
+}
+
+/* ===== MOBILE CONTROLS ===== */
+#mobile-controls {
+    display: none;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(4, 8, 24, 0.9);
+    border-top: 1px solid var(--border);
+    gap: 12px;
+}
+
+@media (pointer: coarse) {
+    #mobile-controls {
+        display: flex;
+    }
+}
+
+.dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    grid-template-rows: repeat(3, 44px);
+    gap: 4px;
+}
+
+.dpad-btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(79, 156, 255, 0.1);
+    color: var(--text);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: 0.1s;
+}
+
+.dpad-btn:active {
+    background: rgba(79, 156, 255, 0.3);
+}
+
+.dpad-btn.empty {
+    background: transparent;
+    border-color: transparent;
+    pointer-events: none;
+}
+
+#btn-fire {
+    width: 80px;
+    height: 80px;
+    border: 2px solid var(--danger);
+    border-radius: 50%;
+    background: rgba(255, 79, 107, 0.15);
+    color: var(--danger);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: 0.1s;
+}
+
+#btn-fire:active {
+    background: rgba(255, 79, 107, 0.35);
+}

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Shooter – Login</title>
+  <meta name="description" content="Sign in to Star Shooter and compete for the highest score in the galaxy." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Animated star background -->
+<canvas id="stars-canvas"></canvas>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="logo">
+      <span class="logo-icon">🚀</span>
+      <h1>STAR SHOOTER</h1>
+      <p>DEFEND THE GALAXY</p>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="tab-row">
+      <button class="tab-btn active" id="tab-login"    onclick="switchTab('login')">Sign In</button>
+      <button class="tab-btn"        id="tab-register" onclick="switchTab('register')">Register</button>
+    </div>
+
+    <!-- Login form -->
+    <form class="auth-form" id="form-login" onsubmit="handleLogin(event)">
+      <div class="field-group">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="pilot@galaxy.com" required autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <button type="submit" class="btn-primary" id="btn-login">Sign In</button>
+    </form>
+
+    <!-- Register form (hidden initially) -->
+    <form class="auth-form" id="form-register" style="display:none" onsubmit="handleRegister(event)">
+      <div class="field-group">
+        <label for="reg-name">Pilot Name</label>
+        <input type="text" id="reg-name" placeholder="AceViper42" required maxlength="24" />
+      </div>
+      <div class="field-group">
+        <label for="reg-email">Email</label>
+        <input type="email" id="reg-email" placeholder="pilot@galaxy.com" required autocomplete="email" />
+      </div>
+      <div class="field-group">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" placeholder="Min. 6 characters" required autocomplete="new-password" minlength="6" />
+      </div>
+      <button type="submit" class="btn-primary" id="btn-register">Create Account</button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider" style="margin-top:18px">or continue with</div>
+
+    <!-- Google -->
+    <button class="btn-google" id="btn-google" onclick="handleGoogle()" style="margin-top:14px;width:100%">
+      <!-- Google G icon -->
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.5 6.5 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/>
+        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 13 24 13c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34.5 6.5 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.1 35.5 26.7 36 24 36c-5.2 0-9.6-3.2-11.3-7.8l-6.5 5C9.5 39.5 16.3 44 24 44z"/>
+        <path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.3 4.1-4.2 5.4l6.2 5.2C36.9 36.9 44 31 44 24c0-1.3-.1-2.7-.4-3.9z"/>
+      </svg>
+      Sign in with Google
+    </button>
+
+    <!-- Message -->
+    <div id="auth-message" style="margin-top:14px"></div>
+
+  </div>
+</div>
+
+<script>
+// Animated starfield
+const c = document.getElementById('stars-canvas');
+const cx = c.getContext('2d');
+let W = c.width = window.innerWidth;
+let H = c.height = window.innerHeight;
+window.addEventListener('resize', () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; });
+const stars = Array.from({ length: 200 }, () => ({
+  x: Math.random() * W, y: Math.random() * H,
+  r: Math.random() * 1.4 + 0.2,
+  spd: Math.random() * 0.5 + 0.1,
+  a: Math.random() * 0.7 + 0.2
+}));
+(function animStars() {
+  cx.clearRect(0, 0, W, H);
+  stars.forEach(s => {
+    s.y += s.spd;
+    if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+    cx.globalAlpha = s.a;
+    cx.fillStyle = '#fff';
+    cx.beginPath();
+    cx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    cx.fill();
+  });
+  cx.globalAlpha = 1;
+  requestAnimationFrame(animStars);
+})();
+</script>
+
+<script type="module">
+import { signInWithGoogle, signInWithEmail, registerWithEmail, onAuthChange } from './js/auth.js';
+
+// Redirect if already logged in
+onAuthChange(user => {
+  if (user) window.location.href = 'game.html';
+});
+
+// Tab switching
+window.switchTab = function(tab) {
+  document.getElementById('form-login').style.display    = tab === 'login'    ? 'flex' : 'none';
+  document.getElementById('form-register').style.display = tab === 'register' ? 'flex' : 'none';
+  document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+};
+
+function setMsg(msg, type = '') {
+  const el = document.getElementById('auth-message');
+  el.textContent = msg;
+  el.className = type;
+}
+
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  btn.disabled = loading;
+  btn.innerHTML = loading ? '<span class="spinner"></span> Loading…' : btn.dataset.label;
+}
+
+// Store labels
+['btn-login','btn-register','btn-google'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.dataset.label = el.innerHTML;
+});
+
+window.handleLogin = async function(e) {
+  e.preventDefault();
+  setLoading('btn-login', true);
+  try {
+    await signInWithEmail(
+      document.getElementById('login-email').value.trim(),
+      document.getElementById('login-password').value
+    );
+    setMsg('Welcome back! Launching…', 'success');
+  } catch (err) {
+    setMsg(friendlyError(err.code), 'error');
+    setLoading('btn-login', false);
+  }
+};
+
+window.handleRegister = async function(e) {
+  e.preventDefault();
+  setLoading('btn-register', true);
+  try {
+    await registerWithEmail(
+      document.getElementById('reg-email').value.trim(),
+      document.getElementById('reg-password').value,
+      document.getElementById('reg-name').value.trim()
+    );
+    setMsg('Account created! Launching…', 'success');
+  } catch (err) {
+    setMsg(friendlyError(err.code), 'error');
+    setLoading('btn-register', false);
+  }
+};
+
+window.handleGoogle = async function() {
+  setLoading('btn-google', true);
+  try {
+    await signInWithGoogle();
+  } catch (err) {
+    setMsg(friendlyError(err.code), 'error');
+    setLoading('btn-google', false);
+  }
+};
+
+function friendlyError(code) {
+  const map = {
+    'auth/user-not-found':      'No account found with that email.',
+    'auth/wrong-password':      'Incorrect password. Try again.',
+    'auth/email-already-in-use':'That email is already registered.',
+    'auth/invalid-email':       'Please enter a valid email address.',
+    'auth/weak-password':       'Password must be at least 6 characters.',
+    'auth/popup-closed-by-user':'Sign-in popup was closed.',
+    'auth/network-request-failed': 'Network error. Check your connection.',
+    'auth/invalid-credential':  'Wrong email or password.',
+  };
+  return map[code] || 'Something went wrong. Please try again.';
+}
+</script>
+
+</body>
+</html>

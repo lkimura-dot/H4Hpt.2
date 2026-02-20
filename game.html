@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Star Shooter – Play</title>
+    <meta name="description" content="Play Star Shooter – defend the galaxy and top the leaderboard!" />
+    <link rel="stylesheet" href="css/game.css" />
+</head>
+
+<body>
+
+    <div id="game-root">
+
+        <!-- ── HUD ───────────────────────────────────────────────── -->
+        <header id="hud">
+            <div class="hud-block">
+                <span class="hud-label">Score</span>
+                <span class="hud-value" id="hud-score">0</span>
+            </div>
+            <div class="hud-block">
+                <span class="hud-label">Lives</span>
+                <span class="hud-value lives" id="hud-lives">❤️❤️❤️</span>
+            </div>
+            <div class="hud-title">STAR SHOOTER</div>
+            <div class="hud-block">
+                <span class="hud-label">Level</span>
+                <span class="hud-value level" id="hud-level">1</span>
+            </div>
+            <div class="hud-block">
+                <span class="hud-label">Best</span>
+                <span class="hud-value best" id="hud-best">0</span>
+            </div>
+            <button id="btn-pause" title="Pause (P)">⏸ PAUSE</button>
+            <button id="btn-signout" class="btn-game secondary" style="font-size:0.6rem;padding:6px 10px;">Sign
+                Out</button>
+        </header>
+
+        <!-- ── Canvas ─────────────────────────────────────────────── -->
+        <div id="canvas-wrapper">
+            <canvas id="gameCanvas"></canvas>
+            <p class="controls-hint">WASD / Arrow Keys to move · SPACE to fire · P to pause</p>
+
+            <!-- START overlay -->
+            <div class="overlay" id="overlay-start">
+                <div class="overlay-card">
+                    <span class="emoji">🚀</span>
+                    <h2>STAR SHOOTER</h2>
+                    <p>Pilot: <strong id="hud-user" style="color:#e2e8f0">—</strong></p>
+                    <p style="margin-top:12px">Destroy enemy waves and save your galaxy.<br />Your score is saved to the
+                        cloud after each game.</p>
+                    <br />
+                    <p style="font-size:0.78rem;color:#64748b">WASD / Arrows = move &nbsp;|&nbsp; Space = fire
+                        &nbsp;|&nbsp; P = pause</p>
+                    <br />
+                    <button class="btn-game" id="btn-start-game">🚀 LAUNCH</button>
+                </div>
+            </div>
+
+            <!-- PAUSE overlay -->
+            <div class="overlay hidden" id="overlay-pause">
+                <div class="overlay-card">
+                    <span class="emoji">⏸</span>
+                    <h2>PAUSED</h2>
+                    <p>The galaxy waits for you, pilot.</p>
+                    <br />
+                    <button class="btn-game" id="btn-resume">▶ RESUME</button>
+                    <button class="btn-game secondary" id="btn-quit">🏠 MAIN MENU</button>
+                </div>
+            </div>
+
+            <!-- GAME OVER overlay -->
+            <div class="overlay hidden" id="overlay-gameover">
+                <div class="overlay-card">
+                    <span class="emoji">💥</span>
+                    <h2>GAME OVER</h2>
+                    <p class="stat">Score: <span id="go-score">0</span></p>
+                    <p class="stat">Level reached: <span id="go-level">1</span></p>
+                    <p class="stat">Personal best: <span id="go-best">0</span></p>
+
+                    <!-- Leaderboard -->
+                    <p
+                        style="margin-top:16px;font-size:0.75rem;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;">
+                        🏆 Top Pilots</p>
+                    <div id="leaderboard-panel"></div>
+
+                    <div style="margin-top:16px">
+                        <button class="btn-game" id="btn-restart">🔄 PLAY AGAIN</button>
+                        <button class="btn-game secondary" id="btn-menu">🏠 MENU</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEVEL UP overlay -->
+            <div class="overlay hidden" id="overlay-levelup">
+                <div class="overlay-card">
+                    <span class="emoji">⭐</span>
+                    <h2>LEVEL UP!</h2>
+                    <p class="stat">Entering Level <span id="lu-level">2</span></p>
+                    <p style="color:#94a3b8;font-size:0.85rem;">Score so far: <span id="lu-score"
+                            style="color:#fbbf24">0</span></p>
+                    <p style="color:#94a3b8;font-size:0.82rem;margin-top:8px">Enemies are getting faster and smarter…
+                    </p>
+                    <br />
+                    <button class="btn-game" id="btn-next-level">⚡ CONTINUE</button>
+                </div>
+            </div>
+
+        </div><!-- /canvas-wrapper -->
+
+        <!-- ── Mobile D-pad ───────────────────────────────────────── -->
+        <div id="mobile-controls">
+            <div class="dpad">
+                <div class="dpad-btn empty"></div>
+                <button class="dpad-btn" id="mb-up" aria-label="Up">▲</button>
+                <div class="dpad-btn empty"></div>
+                <button class="dpad-btn" id="mb-left" aria-label="Left">◀</button>
+                <div class="dpad-btn empty"></div>
+                <button class="dpad-btn" id="mb-right" aria-label="Right">▶</button>
+                <div class="dpad-btn empty"></div>
+                <button class="dpad-btn" id="mb-down" aria-label="Down">▼</button>
+                <div class="dpad-btn empty"></div>
+            </div>
+            <button id="btn-fire" aria-label="Fire">FIRE</button>
+        </div>
+
+    </div><!-- /game-root -->
+
+    <!-- Load game module -->
+    <script type="module" src="js/game.js"></script>
+
+</body>
+
+</html>
